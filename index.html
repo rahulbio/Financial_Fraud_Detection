@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Transaction Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        h1 {
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+        .form-control, .form-select {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+        }
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+        .form-select option {
+            background-color: #667eea;
+            color: #ffffff;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px 0 rgba(65, 132, 234, 0.85);
+        }
+        .alert {
+            border-radius: 10px;
+            font-weight: 500;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .alert-green {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: #ffffff;
+        }
+        .alert-red {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: #ffffff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #000000;
+        }
+        .input-with-icon {
+            position: relative;
+        }
+        .input-with-icon .form-control,
+        .input-with-icon .form-select {
+            padding-left: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glass-container">
+            <h1><i class="fas fa-shield-alt"></i> Secure Transaction Analyzer</h1>
+            <form method="post" action="/predict" class="needs-validation" novalidate>
+                <div class="mb-4 input-with-icon">
+                    <label for="transaction_type" class="form-label">Transaction Type</label>
+                    <i class="fas fa-exchange-alt form-icon"></i>
+                    <select class="form-select" id="transaction_type" name="transaction_type" required>
+                        <option value="" selected disabled>Select type</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Transfer">Transfer</option>
+                        <option value="Cash-Out">Cash-out</option>
+                        <option value="Cash-In">Cash-in</option>
+                        <option value="Debit">Debit</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4 input-with-icon">
+                    <label for="transaction_amount" class="form-label">Transaction Amount</label>
+                    <i class="fas fa-dollar-sign form-icon"></i>
+                    <input type="number" step="0.01" class="form-control" id="transaction_amount" name="transaction_amount" placeholder="Enter amount" required>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 input-with-icon">
+                        <label for="initial_balance_sender" class="form-label">Initial Balance (Sender)</label>
+                        <i class="fas fa-wallet form-icon"></i>
+                        <input type="number" step="0.01" class="form-control" id="initial_balance_sender" name="initial_balance_sender" placeholder="Sender's initial balance" required>
+                    </div>
+                    <div class="col-md-6 input-with-icon">
+                        <label for="initial_balance_receiver" class="form-label">Initial Balance (Receiver)</label>
+                        <i class="fas fa-wallet form-icon"></i>
+                        <input type="number" step="0.01" class="form-control" id="initial_balance_receiver" name="initial_balance_receiver" placeholder="Receiver's initial balance" required>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 input-with-icon">
+                        <label for="final_balance_sender" class="form-label">Final Balance (Sender)</label>
+                        <i class="fas fa-wallet form-icon"></i>
+                        <input type="number" step="0.01" class="form-control" id="final_balance_sender" name="final_balance_sender" placeholder="Sender's final balance" required>
+                    </div>
+                    <div class="col-md-6 input-with-icon">
+                        <label for="final_balance_receiver" class="form-label">Final Balance (Receiver)</label>
+                        <i class="fas fa-wallet form-icon"></i>
+                        <input type="number" step="0.01" class="form-control" id="final_balance_receiver" name="final_balance_receiver" placeholder="Receiver's final balance" required>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i> Analyze Transaction</button>
+                </div>
+            </form>
+
+            {% if prediction_text %}
+            <div class="alert mt-4 {% if is_fraud %}alert-red{% else %}alert-green{% endif %}">
+                <i class="fas {% if is_fraud %}fa-exclamation-triangle{% else %}fa-check-circle{% endif %}"></i> {{ prediction_text }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>
